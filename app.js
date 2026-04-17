@@ -1,14 +1,15 @@
-const express = require ('express')
+const express = require('express')
 const app = express();
-const port = 3000; 
+const port = 3000;
 app.use(express.json());
 let books = [
-    { id: 1, title: 'Cien años de soledad', author: 'Gabriel García Márquez'},
-    { id: 2, title: 'Don Quijote', author: 'Miguel de Cervantes'}
+    { id: 1, title: 'Cien años de soledad', author: 'Gabriel García Márquez' },
+    { id: 2, title: 'Don Quijote', author: 'Miguel de Cervantes' }
 ];
 
 app.get('/', (req, res) => {
-    res.send('API working'); });
+    res.send('API working');
+});
 
 app.get('/api/books', (req, res) => {
     res.json(books);
@@ -20,14 +21,14 @@ app.get('/api/books', (req, res) => {
 //obtene run libro por id
 app.get('/api/books/:id', (req, res) => {
 
-const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id);
 
-const book = books.find(b=> b.id === id);
+    const book = books.find(b => b.id === id);
 
-if (!book) {
-    return res.status(404).json({ message: 'Book not found'});
-}
-res.json(book);
+    if (!book) {
+        return res.status(404).json({ message: 'Book not found' });
+    }
+    res.json(book);
 });
 
 
@@ -36,34 +37,71 @@ res.json(book);
 //crear un nuevo libro
 app.post('/api/books', (req, res) => {
 
-const { title, author} = req.body;
-if (!title || ! author) { 
-    return res.status(400).json({  
-    message: 'Datos obligatorios'
+    const { title, author } = req.body;
+    if (!title || !author) {
+        return res.status(400).json({
+            message: 'Datos obligatorios'
+        });
+    }
+
+    const newBook = {
+        id: books.length > 0 ? books[books.length - 1].id + 1 : 1,
+        title,
+        author
+    };
+
+    books.push(newBook);
+
+    res.status(201).json(newBook);
+
 });
-}
 
-const newBook = {
-    id: books.length > 0 ? books [books.length - 1].id + 1: 1, 
-    title, 
-    author 
-};
+app.put('/api/books/:id', (req, res) => {
 
-books.push(newBook);
+    const id = parseInt(req.params.id);
+    const { title, author } = req.body;
 
-res.status(201).json(newBook);
+    const book = books.find(b => b.id === id);
 
+    if (!book) {
+        return res.status(404).json({
+            message: 'No encontrado'
+        });
+    }
+
+    book.title = title;
+    book.author = author;
+
+    res.json(book);
+});
+
+app.delete('/api/books/:id', (req, res) =>{
+
+    const id = parseInt(req.params.id);
+
+    const index = books.findIndex(b => b.id === id);
+
+    if (index === -1) {
+        return res.status(404).json({
+            message: 'NO Encontrado'
+        });
+    }
+
+    books.splice(index, 1);
+
+    res.json({
+        message: 'Eliminado'
+    });
 });
 
 
 
-
-
-app.get('/', (req,res)=> { 
+app.get('/', (req, res) => {
     res.send('Hello pitti!');
 });
 
 app.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}`);
 });
+
 

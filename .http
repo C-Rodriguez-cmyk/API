@@ -1,0 +1,31 @@
+
+GET http://localhost:3000/api/books
+
+####################################
+
+GET http://localhost:3000/api/books/2
+
+####################################
+
+POST http://localhost:3000/api/books
+Content-Type: application/json
+
+{
+"title": "harry potter and the sorcerer's stone",
+"author": "J.K. Rowling" 
+}
+
+#################################
+
+
+PUT http://localhost:3000/api/books/3
+Content-Type: application/json
+
+{
+"title": "harry potter and the chamber of secrets",
+"author": "J.K. Rowling" 
+}
+
+#################################
+
+DELETE http://localhost:3000/api/books/3
